@@ -20,7 +20,8 @@ def sanitize(amount):
 def make_method(name):
     return lambda self, other: Money(getattr(self.amount, name)(sanitize(other)))
 
-for op in 'eq ne add radd sub rsub mul rmul floordiv rfloordiv truediv rtruediv mod rmod'.split():
+ops = 'eq ne add radd sub rsub mul rmul floordiv rfloordiv truediv rtruediv div rdiv mod rmod'
+for op in ops.split():
     name = '__%s__' % op
     setattr(Money, name, make_method(name))
 
