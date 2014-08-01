@@ -39,8 +39,13 @@ class MoneyField(models.DecimalField):
         models.Field.__init__(self, verbose_name, name, **kwargs)
 
     def to_python(self, value):
-        value = models.DecimalField.to_python(value)
+        value = models.DecimalField.to_python(self, value)
         if value is None:
             return value
 
         return Money(value)
+
+    def get_prep_value(self, value):
+        if value is None:
+            return None
+        return self.to_python(value).amount
