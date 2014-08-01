@@ -11,7 +11,7 @@ setup(
     url='http://github.com/Suor/django-easymoney',
     license='BSD',
 
-    packages=['simplemoney'],
+    packages=['easymoney'],
     install_requires=[
         'django>=1.6',
     ],
