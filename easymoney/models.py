@@ -20,10 +20,14 @@ def sanitize(amount):
 def make_method(name):
     return lambda self, other: Money(getattr(self.amount, name)(sanitize(other)))
 
+def make_compare(name):
+    return lambda self, other: getattr(self.amount, name)(sanitize(other))
+
 ops = 'eq ne add radd sub rsub mul rmul floordiv rfloordiv truediv rtruediv div rdiv mod rmod'
 for op in ops.split():
     name = '__%s__' % op
-    setattr(Money, name, make_method(name))
+    maker = make_compare if op in {'eq', 'ne'} else make_method
+    setattr(Money, name, maker(name))
 
 
 class MoneyField(models.DecimalField):

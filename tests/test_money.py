@@ -28,10 +28,15 @@ def test_arithmetic():
     pi = Money(3.14)
     e = Money(2.78)
 
-    assert pi == 3.14
-    assert pi == Decimal('3.14')
-    assert pi != 3
-    assert Money(3) == 3
+    # NOTE: we test this way to check that bools are returned
+    assert (pi == 3.14) is True
+    assert (pi == Decimal('3.14')) is True
+    assert (pi == 3) is False
+    assert (pi != 3) is True
+    assert (Money(3) == 3) is True
+
+    assert (3 == pi) is False
+    assert (3 != pi) is True
 
     assert pi + e == 5.92
     assert pi - e == 0.36
@@ -45,6 +50,11 @@ def test_int_arithmetic():
     assert pi * 2 == 6.28
     assert pi / 3 == 1.05
 
+    assert 1 + pi == 4.14
+    assert 1 - pi == -2.14
+    assert 2 * pi == 6.28
+    assert 9 / pi == 2.87
+
 
 def test_float_arithmetic():
     pi = Money(3.14)
@@ -54,5 +64,6 @@ def test_float_arithmetic():
     assert pi * 0.2 == 0.63
     assert pi / 1.5 == 2.09
 
+    # We coerse to 2 digits before operation
     assert pi + 0.005 == 3.15
     assert pi - 0.005 == 3.13
