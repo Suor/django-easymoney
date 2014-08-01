@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='django-easymoney',
-    version='0.0.1',
+    version='0.1',
     author='Alexander Schepanovski',
     author_email='suor.web@gmail.com',
 
@@ -17,7 +17,7 @@ setup(
     ],
 
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
