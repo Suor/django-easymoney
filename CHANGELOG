@@ -1,2 +1,7 @@
+0.2
+- Added simplistic widget
+- Support comparing money with non numbers
+- Fixed precision issue
+
 0.1
 Initial working verion
