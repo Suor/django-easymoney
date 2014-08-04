@@ -14,7 +14,12 @@ class Money(Decimal):
         return 'Money(%s)' % self
 
     def __eq__(self, other):
-        return self.amount == sanitize(other)
+        if isinstance(other, Money):
+            return self.amount == other.amount
+        elif isinstance(other, (int, long, float, Decimal)):
+            return self.amount == sanitize(other)
+        else:
+            return False
 
 # Set up money arithmetic
 def sanitize(amount):
