@@ -13,17 +13,17 @@ class Money(Decimal):
     def __repr__(self):
         return 'Money(%s)' % self
 
+    def __eq__(self, other):
+        return self.amount == sanitize(other)
+
 # Set up money arithmetic
 def sanitize(amount):
     return Decimal(amount).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
 
 def make_method(name):
-    return lambda self, other: Money(getattr(self.amount, name)(sanitize(other)))
+    return lambda self, other: Money(getattr(self.amount, name)(Decimal(other)))
 
-def make_compare(name):
-    return lambda self, other: getattr(self.amount, name)(sanitize(other))
-
-ops = 'eq ne add radd sub rsub mul rmul floordiv rfloordiv truediv rtruediv div rdiv mod rmod'
+ops = 'add radd sub rsub mul rmul floordiv rfloordiv truediv rtruediv div rdiv mod rmod'
 for op in ops.split():
     name = '__%s__' % op
     maker = make_compare if op in {'eq', 'ne'} else make_method

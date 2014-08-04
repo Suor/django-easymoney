@@ -42,6 +42,10 @@ def test_arithmetic():
     assert pi - e == 0.36
 
 
+def test_precision():
+    assert Money(1000) * 1.001 == 1001
+
+
 def test_int_arithmetic():
     pi = Money(3.14)
 
