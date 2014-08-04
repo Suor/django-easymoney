@@ -2,6 +2,8 @@ from decimal import Decimal, ROUND_HALF_UP
 
 from django.db import models
 
+from .forms import MoneyWidget
+
 
 class Money(Decimal):
     def __new__(cls, amount):
@@ -65,3 +67,9 @@ class MoneyField(models.DecimalField):
             return None
         return Decimal(self.to_python(value))
 
+    def formfield(self, **kwargs):
+        defaults = {
+            'widget': MoneyWidget,
+        }
+        defaults.update(kwargs)
+        return super(MoneyField, self).formfield(**defaults)
