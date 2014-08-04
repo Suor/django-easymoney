@@ -4,34 +4,44 @@ from django.db import models
 
 
 class Money(Decimal):
-    def __init__(self, amount):
-        self.amount = sanitize(amount)
+    def __new__(cls, amount):
+        return Decimal.__new__(Money, _sanitize(amount))
 
     def __str__(self):
-        return '$%s' % self.amount # TODO: use babel
+        return '$%s' % Decimal(self) # TODO: use babel
 
     def __repr__(self):
         return 'Money(%s)' % self
 
     def __eq__(self, other):
         if isinstance(other, Money):
-            return self.amount == other.amount
+            return Decimal.__eq__(self, other)
         elif isinstance(other, (int, long, float, Decimal)):
-            return self.amount == sanitize(other)
+            return Decimal.__eq__(self, _sanitize(other))
         else:
             return False
 
 # Set up money arithmetic
-def sanitize(amount):
-    return Decimal(amount).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+def _to_decimal(amount):
+    if isinstance(amount, Decimal):
+        return amount
+    elif isinstance(amount, float):
+        return Decimal.from_float(amount)
+    else:
+        return Decimal(amount)
 
-def make_method(name):
-    return lambda self, other: Money(getattr(self.amount, name)(Decimal(other)))
+def _sanitize(amount):
+    return _to_decimal(amount).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+
+def _make_method(name):
+    method = getattr(Decimal, name)
+    return lambda self, other, context=None: \
+        Money(method(self, _to_decimal(other), context=context))
 
 ops = 'add radd sub rsub mul rmul floordiv rfloordiv truediv rtruediv div rdiv mod rmod'
 for op in ops.split():
     name = '__%s__' % op
-    maker = make_compare if op in {'eq', 'ne'} else make_method
+    maker = make_compare if op in {'eq', 'ne'} else _make_method
     setattr(Money, name, maker(name))
 
 
@@ -53,4 +63,5 @@ class MoneyField(models.DecimalField):
     def get_prep_value(self, value):
         if value is None:
             return None
-        return self.to_python(value).amount
+        return Decimal(self.to_python(value))
+
