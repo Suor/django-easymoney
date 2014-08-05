@@ -37,3 +37,8 @@ def test_select():
     html = form['price'].as_widget()
     assert html.startswith('<select')
     assert 'selected' in html
+
+
+def test_edit_null():
+    form = OptionForm()
+    print str(form)

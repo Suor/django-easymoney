@@ -8,4 +8,5 @@ class Product(models.Model):
 
 
 class Option(models.Model):
-    price = MoneyField(choices=[(Money(0), Money(0)), (Money(0.5), Money(0.5))])
+    price = MoneyField(choices=[(Money(0), Money(0)), (Money(0.5), Money(0.5))],
+                       blank=True, null=True)

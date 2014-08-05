@@ -115,7 +115,7 @@ class MoneyFormField(forms.DecimalField):
 
 class MoneySelect(forms.Select):
     def render_options(self, choices, selected_choices):
-        return super(MoneySelect, self).render_options(choices, map(Decimal, selected_choices))
+        return super(MoneySelect, self).render_options(choices, map(to_dec, selected_choices))
 
 
 class MoneyChoiceField(forms.TypedChoiceField):
@@ -123,5 +123,8 @@ class MoneyChoiceField(forms.TypedChoiceField):
 
     def __init__(self, *args, **kwargs):
         super(MoneyChoiceField, self).__init__(*args, **kwargs)
-        to_dec = lambda m: Decimal(m) if isinstance(m, Money) else m
         self.choices = [(to_dec(k), v) for k, v in self.choices]
+
+
+def to_dec(value):
+    return Decimal(value) if isinstance(value, Money) else value
