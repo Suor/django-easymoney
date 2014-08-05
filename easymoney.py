@@ -118,6 +118,11 @@ class MoneySelect(forms.Select):
         return super(MoneySelect, self).render_options(choices, map(to_dec, selected_choices))
 
 
+class MoneyRadioSelect(forms.RadioSelect):
+    def render(self, name, value, attrs=None, choices=()):
+        return super(MoneyRadioSelect, self).render(name, to_dec(value), attrs, choices)
+
+
 class MoneyChoiceField(forms.TypedChoiceField):
     widget = MoneySelect
 

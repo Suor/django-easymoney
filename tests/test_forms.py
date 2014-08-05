@@ -1,5 +1,6 @@
 from django.forms import ModelForm
 
+from easymoney import MoneyRadioSelect
 from .models import Product, Option
 
 
@@ -31,12 +32,26 @@ def test_edit():
 
 
 def test_select():
-    # p = Product(price=2.34)
     form = OptionForm(instance=Option(price=0.5))
 
     html = form['price'].as_widget()
     assert html.startswith('<select')
     assert 'selected' in html
+
+
+def test_radio():
+    class RadioForm(ModelForm):
+        class Meta:
+            model = Option
+            widgets = {
+                'price': MoneyRadioSelect
+            }
+
+    form = RadioForm(instance=Option(price=0.5))
+
+    html = form['price'].as_widget()
+    assert 'radio' in html
+    assert 'checked' in html
 
 
 def test_edit_null():
