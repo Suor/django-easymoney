@@ -1,7 +1,14 @@
+0.3
+- use babel for money formatting
+- support choices
+- use input type="number"
+- fixed convertion to float and hashing of Money
+- fixed copy/deepcopy of Money
+
 0.2
-- Added simplistic widget
-- Support comparing money with non numbers
-- Fixed precision issue
+- added simplistic widget
+- support comparing money with non numbers
+- fixed precision issue
 
 0.1
 Initial working verion
