@@ -74,8 +74,7 @@ def test_float_arithmetic():
     assert pi - 0.005 == 3.13
 
 
-def test_deepcopy():
+def test_copy():
     pi = Money(3.14)
-    pic = copy.deepcopy(pi)
-    assert pi == pic
-    assert pi is not pic
+    assert pi == copy.copy(pi)
+    assert pi == copy.deepcopy(pi)

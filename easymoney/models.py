@@ -9,11 +9,15 @@ class Money(Decimal):
     def __new__(cls, amount):
         return Decimal.__new__(Money, _sanitize(amount))
 
-    def __str__(self):
-        return '$%s' % Decimal(self) # TODO: use babel
+    # Money is immutable
+    def __copy__(self):
+        return self
 
     def __deepcopy__(self, memo):
-        return Decimal.__new__(Money, self)
+        return self
+
+    def __str__(self):
+        return '$%s' % Decimal(self) # TODO: use babel
 
     def __repr__(self):
         return 'Money(%s)' % self
@@ -78,3 +82,17 @@ class MoneyField(models.DecimalField):
         }
         defaults.update(kwargs)
         return super(MoneyField, self).formfield(**defaults)
+
+        # if self.choices:
+        #     # Also copy-pasted from Field.formfield
+        #     defaults = {
+        #         'choices': self.choices,
+        #         'coerce': self.coerce,
+        #         'required': not self.blank,
+        #         'label': capfirst(self.verbose_name),
+        #         'help_text': self.help_text,
+        #         'widget': forms.CheckboxSelectMultiple
+        #     }
+        #     defaults.update(kwargs)
+        #     return TypedMultipleChoiceField(**defaults)
+        # else:
