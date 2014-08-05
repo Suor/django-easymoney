@@ -16,6 +16,10 @@ class Money(Decimal):
     def __deepcopy__(self, memo):
         return self
 
+    def __float__(self):
+        """Float representation."""
+        return float(Decimal(self))
+
     def __str__(self):
         return '$%s' % Decimal(self) # TODO: use babel
 
