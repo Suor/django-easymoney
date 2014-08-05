@@ -1,3 +1,6 @@
+0.3.1
+- fixed installation issue
+
 0.3
 - use babel for money formatting
 - support choices

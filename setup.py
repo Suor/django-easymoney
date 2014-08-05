@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='django-easymoney',
-    version='0.3',
+    version='0.3.1',
     author='Alexander Schepanovski',
     author_email='suor.web@gmail.com',
 
