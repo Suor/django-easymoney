@@ -2,7 +2,7 @@ from decimal import Decimal, ROUND_HALF_UP
 
 from django.db import models
 
-from .forms import MoneyWidget
+from .forms import MoneyInput
 
 
 class Money(Decimal):
@@ -69,7 +69,7 @@ class MoneyField(models.DecimalField):
 
     def formfield(self, **kwargs):
         defaults = {
-            'widget': MoneyWidget,
+            'widget': MoneyInput,
         }
         defaults.update(kwargs)
         return super(MoneyField, self).formfield(**defaults)

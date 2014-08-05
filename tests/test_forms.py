@@ -20,5 +20,6 @@ def test_edit():
     form = ProductForm(instance=p)
 
     html = form['price'].as_widget()
+    assert 'type="number"' in html
     assert '2.34' in html
     assert '$2.34' not in html
