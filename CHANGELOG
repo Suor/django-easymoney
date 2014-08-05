@@ -1,3 +1,7 @@
+0.3.2
+- added MoneyRadioSelect widget
+- fixed null values in MoneySelect
+
 0.3.1
 - fixed installation issue
 
