@@ -1,8 +1,10 @@
 from decimal import Decimal, ROUND_HALF_UP
 
+from django import forms
 from django.db import models
 
-from .forms import MoneyInput
+
+__all__ = ['Money', 'MoneyField']
 
 
 class Money(Decimal):
@@ -82,21 +84,30 @@ class MoneyField(models.DecimalField):
 
     def formfield(self, **kwargs):
         defaults = {
-            'widget': MoneyInput,
+            'form_class': MoneyFormField,
+            'choices_form_class': MoneyChoiceField,
         }
         defaults.update(kwargs)
         return super(MoneyField, self).formfield(**defaults)
 
-        # if self.choices:
-        #     # Also copy-pasted from Field.formfield
-        #     defaults = {
-        #         'choices': self.choices,
-        #         'coerce': self.coerce,
-        #         'required': not self.blank,
-        #         'label': capfirst(self.verbose_name),
-        #         'help_text': self.help_text,
-        #         'widget': forms.CheckboxSelectMultiple
-        #     }
-        #     defaults.update(kwargs)
-        #     return TypedMultipleChoiceField(**defaults)
-        # else:
+
+class MoneyFormField(forms.DecimalField):
+    def prepare_value(self, value):
+        if isinstance(value, Money):
+            return Decimal(value)
+        return value
+
+
+class MoneySelect(forms.Select):
+    def render_options(self, choices, selected_choices):
+        return super(MoneySelect, self).render_options(choices, map(Decimal, selected_choices))
+
+
+class MoneyChoiceField(forms.TypedChoiceField):
+    widget = MoneySelect
+
+    def __init__(self, *args, **kwargs):
+        super(MoneyChoiceField, self).__init__(*args, **kwargs)
+        to_dec = lambda m: Decimal(m) if isinstance(m, Money) else m
+        self.choices = [(to_dec(k), v) for k, v in self.choices]
+        # self.choices = [(k, to_dec(v)) for k, v in self.choices]
