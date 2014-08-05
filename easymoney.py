@@ -2,10 +2,21 @@ from decimal import Decimal, ROUND_HALF_UP
 
 from django import forms
 from django.db import models
+from django.conf import settings
+
+from babel.numbers import format_currency
 
 
 __all__ = ['Money', 'MoneyField']
 
+
+# Settings
+
+CURRENCY_CODE = getattr(settings, 'CURRENCY_CODE', 'USD')
+CURRENCY_LOCALE = getattr(settings, 'CURRENCY_LOCALE', 'en_US')
+
+
+# Data class
 
 class Money(Decimal):
     def __new__(cls, amount):
@@ -23,7 +34,7 @@ class Money(Decimal):
         return float(Decimal(self))
 
     def __str__(self):
-        return '$%s' % Decimal(self) # TODO: use babel
+        return format_currency(Decimal(self), CURRENCY_CODE, locale=CURRENCY_LOCALE)
 
     def __repr__(self):
         return 'Money(%s)' % self
@@ -62,6 +73,8 @@ for op in ops.split():
     setattr(Money, name, maker(name))
 
 
+# Model field
+
 class MoneyField(models.DecimalField):
     __metaclass__ = models.SubfieldBase
 
@@ -90,6 +103,8 @@ class MoneyField(models.DecimalField):
         defaults.update(kwargs)
         return super(MoneyField, self).formfield(**defaults)
 
+
+# Form fields and widgets
 
 class MoneyFormField(forms.DecimalField):
     def prepare_value(self, value):

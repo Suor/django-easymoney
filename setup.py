@@ -14,6 +14,7 @@ setup(
     packages=['easymoney'],
     install_requires=[
         'django>=1.6',
+        'babel'
     ],
 
     classifiers=[
