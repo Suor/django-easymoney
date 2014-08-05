@@ -12,6 +12,9 @@ class Money(Decimal):
     def __str__(self):
         return '$%s' % Decimal(self) # TODO: use babel
 
+    def __deepcopy__(self, memo):
+        return Decimal.__new__(Money, self)
+
     def __repr__(self):
         return 'Money(%s)' % self
 
@@ -33,6 +36,8 @@ def _to_decimal(amount):
         return Decimal(amount)
 
 def _sanitize(amount):
+    if isinstance(amount, Money):
+        return amount
     return _to_decimal(amount).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
 
 def _make_method(name):

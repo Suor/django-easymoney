@@ -1,3 +1,4 @@
+import copy
 from decimal import Decimal
 
 from easymoney import Money
@@ -71,3 +72,10 @@ def test_float_arithmetic():
     # We coerse to 2 digits before operation
     assert pi + 0.005 == 3.15
     assert pi - 0.005 == 3.13
+
+
+def test_deepcopy():
+    pi = Money(3.14)
+    pic = copy.deepcopy(pi)
+    assert pi == pic
+    assert pi is not pic
