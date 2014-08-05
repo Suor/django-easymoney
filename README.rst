@@ -44,10 +44,3 @@ Overview
 
     # No partial cents or crazy floats
     obj.price / 3   # $1.05
-
-
-TODO
-----
-
-- form field
-- widget
