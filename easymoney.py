@@ -110,4 +110,3 @@ class MoneyChoiceField(forms.TypedChoiceField):
         super(MoneyChoiceField, self).__init__(*args, **kwargs)
         to_dec = lambda m: Decimal(m) if isinstance(m, Money) else m
         self.choices = [(to_dec(k), v) for k, v in self.choices]
-        # self.choices = [(k, to_dec(v)) for k, v in self.choices]
