@@ -1,3 +1,4 @@
+import sys
 from decimal import Decimal, ROUND_HALF_UP
 
 from django import forms
@@ -37,7 +38,7 @@ class Money(Decimal):
         return format_currency(Decimal(self), CURRENCY_CODE, locale=CURRENCY_LOCALE)
 
     def __repr__(self):
-        return 'Money(%s)' % self
+        return stdout_encode(u'Money(%s)' % self)
 
     def __eq__(self, other):
         if isinstance(other, Money):
@@ -133,3 +134,8 @@ class MoneyChoiceField(forms.TypedChoiceField):
 
 def to_dec(value):
     return Decimal(value) if isinstance(value, Money) else value
+
+def stdout_encode(u, default='UTF8'):
+    if sys.stdout.encoding:
+        return u.encode(sys.stdout.encoding)
+    return u.encode(default)
