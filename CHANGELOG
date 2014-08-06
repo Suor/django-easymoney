@@ -1,3 +1,6 @@
+0.3.3
+- fixed Money repr encoding
+
 0.3.2
 - added MoneyRadioSelect widget
 - fixed null values in MoneySelect
