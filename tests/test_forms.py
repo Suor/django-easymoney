@@ -35,6 +35,7 @@ def test_select():
 
     html = form['price'].as_widget()
     assert html.startswith('<select')
+    assert 'value="0.50"' in html
     assert 'selected' in html
 
 
@@ -50,6 +51,7 @@ def test_radio():
 
     html = form['price'].as_widget()
     assert 'radio' in html
+    assert 'value="0.50"' in html
     assert 'checked' in html
 
 
