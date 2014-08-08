@@ -1,3 +1,6 @@
+0.3.4
+- get rid of MoneySelect and MoneyRadioSelect
+
 0.3.3
 - fixed Money repr encoding
 
