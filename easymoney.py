@@ -105,32 +105,23 @@ class MoneyField(models.DecimalField):
         return super(MoneyField, self).formfield(**defaults)
 
 
-# Form fields and widgets
+# Form fields
 
 class MoneyFormField(forms.DecimalField):
     def prepare_value(self, value):
-        if isinstance(value, Money):
-            return Decimal(value)
-        return value
-
-
-class MoneySelect(forms.Select):
-    def render_options(self, choices, selected_choices):
-        return super(MoneySelect, self).render_options(choices, map(to_dec, selected_choices))
-
-
-class MoneyRadioSelect(forms.RadioSelect):
-    def render(self, name, value, attrs=None, choices=()):
-        return super(MoneyRadioSelect, self).render(name, to_dec(value), attrs, choices)
+        return to_dec(value)
 
 
 class MoneyChoiceField(forms.TypedChoiceField):
-    widget = MoneySelect
+    def prepare_value(self, value):
+        return to_dec(value)
 
     def __init__(self, *args, **kwargs):
         super(MoneyChoiceField, self).__init__(*args, **kwargs)
         self.choices = [(to_dec(k), v) for k, v in self.choices]
 
+
+# Utils
 
 def to_dec(value):
     return Decimal(value) if isinstance(value, Money) else value

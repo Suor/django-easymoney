@@ -1,6 +1,5 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, RadioSelect
 
-from easymoney import MoneyRadioSelect
 from .models import Product, Option
 
 
@@ -44,7 +43,7 @@ def test_radio():
         class Meta:
             model = Option
             widgets = {
-                'price': MoneyRadioSelect
+                'price': RadioSelect
             }
 
     form = RadioForm(instance=Option(price=0.5))
