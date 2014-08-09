@@ -1,3 +1,5 @@
+- fixed Money stringification with non-ascii currency symbol
+
 0.3.4
 - get rid of MoneySelect and MoneyRadioSelect
 

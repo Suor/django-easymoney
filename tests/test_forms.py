@@ -1,3 +1,4 @@
+from mock import patch
 from django.forms import ModelForm, RadioSelect
 
 from .models import Product, Option
@@ -58,3 +59,8 @@ def test_radio():
 def test_edit_null():
     form = OptionForm()
     print str(form)
+
+
+def test_unicode():
+    with patch('easymoney.CURRENCY_CODE', 'EUR'):
+        str(OptionForm())

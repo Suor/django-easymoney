@@ -36,6 +36,7 @@ class Money(Decimal):
 
     def __str__(self):
         return format_currency(Decimal(self), CURRENCY_CODE, locale=CURRENCY_LOCALE)
+    __unicode__ = __str__
 
     def __repr__(self):
         return stdout_encode(u'Money(%s)' % self)
