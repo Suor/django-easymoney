@@ -1,4 +1,5 @@
 import copy
+import pickle
 from decimal import Decimal
 
 from easymoney import Money
@@ -78,3 +79,9 @@ def test_copy():
     pi = Money(3.14)
     assert pi == copy.copy(pi)
     assert pi == copy.deepcopy(pi)
+
+
+def test_pickle():
+    pi = Money(3.14)
+    assert pickle.loads(pickle.dumps(pi)) == pi
+    assert pickle.loads(pickle.dumps(pi, -1)) == pi

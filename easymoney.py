@@ -23,6 +23,10 @@ class Money(Decimal):
     def __new__(cls, amount):
         return Decimal.__new__(Money, _sanitize(amount))
 
+    # Support for pickling
+    def __reduce__(self):
+        return (self.__class__, (Decimal.__str__(self),))
+
     # Money is immutable
     def __copy__(self):
         return self
