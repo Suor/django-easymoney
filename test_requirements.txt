@@ -1,4 +1,5 @@
 Django
+babel
 pytest
 pytest-django
 pytest-pythonpath
