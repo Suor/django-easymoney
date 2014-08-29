@@ -2,6 +2,8 @@ import copy
 import pickle
 from decimal import Decimal
 
+from mock import patch
+
 from easymoney import Money
 
 
@@ -24,6 +26,9 @@ def test_create():
 def test_str():
     assert str(Money(3.14)) == '$3.14'
     assert str(Money(3)) == '$3.00'
+    with patch('easymoney.CURRENCY_CODE', 'EUR'):
+        assert str(Money(3.14)) == '\xe2\x82\xac3.14'
+        assert str(Money(3)) == '\xe2\x82\xac3.00'
 
 
 def test_arithmetic():

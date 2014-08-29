@@ -38,9 +38,11 @@ class Money(Decimal):
         """Float representation."""
         return float(Decimal(self))
 
-    def __str__(self):
+    def __unicode__(self):
         return format_currency(Decimal(self), CURRENCY_CODE, locale=CURRENCY_LOCALE)
-    __unicode__ = __str__
+
+    def __str__(self):
+        return unicode(self).encode('utf-8')
 
     def __repr__(self):
         return stdout_encode(u'Money(%s)' % self)
