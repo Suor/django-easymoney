@@ -57,6 +57,17 @@ class Money(Decimal):
     def __str__(self):
         return unicode(self).encode('utf-8')
 
+    def __format__(self, format_spec):
+        if format_spec in {'', 's'}:
+            formatted = unicode(self)
+        else:
+            formatted = format(Decimal(self), format_spec)
+
+        if isinstance(format_spec, str):
+            return formatted.encode('utf-8')
+        else:
+            return formatted
+
     def __repr__(self):
         return stdout_encode(u'Money(%s)' % self)
 

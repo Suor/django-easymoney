@@ -31,6 +31,15 @@ def test_str():
         assert str(Money(3)) == '\xe2\x82\xac3.00'
 
 
+def test_format():
+    pi = Money(3.14)
+    assert '{}'.format(pi) == '$3.14'
+    assert '{:s}'.format(pi) == '$3.14'
+    assert isinstance(u'{}'.format(pi), unicode)
+    assert '{:.1f}'.format(pi) == '3.1'
+    assert '{:e}'.format(pi) == '3.14e+0'
+
+
 def test_arithmetic():
     pi = Money(3.14)
     e = Money(2.78)
