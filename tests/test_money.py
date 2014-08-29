@@ -51,6 +51,12 @@ def test_arithmetic():
 
 def test_precision():
     assert Money(1000) * 1.001 == 1001
+    assert Money('1.001') * 1000 == 1000
+
+
+def test_higher_precision():
+    with patch('easymoney.CURRENCY_DECIMAL_PLACES', 3):
+        assert Money('1.001') * 1000 == 1001
 
 
 def test_int_arithmetic():
@@ -90,3 +96,9 @@ def test_pickle():
     pi = Money(3.14)
     assert pickle.loads(pickle.dumps(pi)) == pi
     assert pickle.loads(pickle.dumps(pi, -1)) == pi
+
+
+def test_places_str():
+    with patch('easymoney.CURRENCY_DECIMAL_PLACES', 3):
+        assert str(Money('0.503')) == '$0.503'
+        assert str(Money('0.500')) == '$0.50'

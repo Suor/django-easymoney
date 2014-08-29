@@ -1,6 +1,10 @@
 from decimal import Decimal
-import pytest
 
+import pytest
+from mock import patch
+from django.db import models
+
+from easymoney import MoneyField
 from .models import Product
 
 
@@ -33,3 +37,11 @@ def test_fetch():
 
     assert list(Product.objects.filter(price__lt=3.5).values_list('price', flat=True)) \
         == [Decimal('2.78'), Decimal('3.14')]
+
+
+def test_places():
+    with patch('easymoney.CURRENCY_DECIMAL_PLACES', 3):
+        class Game(models.Model):
+            bet = MoneyField()
+
+        assert Game._meta.get_field('bet').decimal_places == 3

@@ -5,8 +5,6 @@ from django import forms
 from django.db import models
 from django.conf import settings
 
-from babel.numbers import format_currency
-
 
 __all__ = ['Money', 'MoneyField']
 
@@ -15,6 +13,21 @@ __all__ = ['Money', 'MoneyField']
 
 CURRENCY_CODE = getattr(settings, 'CURRENCY_CODE', 'USD')
 CURRENCY_LOCALE = getattr(settings, 'CURRENCY_LOCALE', 'en_US')
+CURRENCY_DECIMAL_PLACES = getattr(settings, 'CURRENCY_DECIMAL_PLACES', 2)
+
+
+# Currency formatting
+
+from babel.core import Locale
+from babel.numbers import LC_NUMERIC, parse_pattern
+
+def format_currency(number, currency, format=None, locale=LC_NUMERIC):
+    locale = Locale.parse(locale)
+    if not format:
+        format = locale.currency_formats.get(format)
+    pattern = parse_pattern(format)
+    pattern.frac_prec = (2, CURRENCY_DECIMAL_PLACES)
+    return pattern.apply(number, locale, currency=currency)
 
 
 # Data class
@@ -67,7 +80,8 @@ def _to_decimal(amount):
 def _sanitize(amount):
     if isinstance(amount, Money):
         return amount
-    return _to_decimal(amount).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+    quant = Decimal('0.1') ** CURRENCY_DECIMAL_PLACES
+    return _to_decimal(amount).quantize(quant, rounding=ROUND_HALF_UP)
 
 def _make_method(name):
     method = getattr(Decimal, name)
@@ -88,7 +102,7 @@ class MoneyField(models.DecimalField):
 
     # NOTE: we specify default value for max_digits for extra ease
     def __init__(self, verbose_name=None, name=None, max_digits=12, **kwargs):
-        self.max_digits, self.decimal_places = max_digits, 2
+        self.max_digits, self.decimal_places = max_digits, CURRENCY_DECIMAL_PLACES
         models.Field.__init__(self, verbose_name, name, **kwargs)
 
     def to_python(self, value):
