@@ -13,7 +13,7 @@ setup(
 
     py_modules=['easymoney'],
     install_requires=[
-        'django>=1.6',
+        'django>=1.6,<1.7',
         'babel'
     ],
 
