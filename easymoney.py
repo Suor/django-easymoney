@@ -116,6 +116,11 @@ class MoneyField(models.DecimalField):
         self.max_digits, self.decimal_places = max_digits, CURRENCY_DECIMAL_PLACES
         models.Field.__init__(self, verbose_name, name, **kwargs)
 
+    def deconstruct(self):
+        name, path, args, kwargs = super(MoneyField, self).deconstruct()
+        del kwargs["decimal_places"]
+        return name, path, args, kwargs
+
     def to_python(self, value):
         value = models.DecimalField.to_python(self, value)
         if value is None:

@@ -8,7 +8,7 @@ Handles type conversions and arithmetic seamlessly.
 Requirements
 ------------
 
-Python 2.7, Django 1.6.
+Python 2.7, Django 1.6+.
 
 
 Installation
