@@ -1,3 +1,7 @@
+0.4.1
+- support Django 1.7 including migrations
+- added CURRENCY_FORMAT setting
+
 0.4
 - added format support to Money
 - added CURRENCY_DECIMAL_PLACES setting
