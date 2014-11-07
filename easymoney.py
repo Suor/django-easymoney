@@ -12,6 +12,7 @@ __all__ = ['Money', 'MoneyField']
 # Settings
 
 CURRENCY_CODE = getattr(settings, 'CURRENCY_CODE', 'USD')
+CURRENCY_FORMAT = getattr(settings, 'CURRENCY_FORMAT', None)
 CURRENCY_LOCALE = getattr(settings, 'CURRENCY_LOCALE', 'en_US')
 CURRENCY_DECIMAL_PLACES = getattr(settings, 'CURRENCY_DECIMAL_PLACES', 2)
 
@@ -52,7 +53,8 @@ class Money(Decimal):
         return float(Decimal(self))
 
     def __unicode__(self):
-        return format_currency(Decimal(self), CURRENCY_CODE, locale=CURRENCY_LOCALE)
+        return format_currency(Decimal(self), CURRENCY_CODE,
+            locale=CURRENCY_LOCALE, format=CURRENCY_FORMAT)
 
     def __str__(self):
         return unicode(self).encode('utf-8')

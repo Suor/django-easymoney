@@ -29,6 +29,8 @@ def test_str():
     with patch('easymoney.CURRENCY_CODE', 'EUR'):
         assert str(Money(3.14)) == '\xe2\x82\xac3.14'
         assert str(Money(3)) == '\xe2\x82\xac3.00'
+    with patch('easymoney.CURRENCY_FORMAT', '#. points'):
+        assert str(Money(3)) == '3.00 points'
 
 
 def test_format():
