@@ -1,3 +1,6 @@
+0.5
+- support subclassing to support several currencies simultaneously
+
 0.4.1
 - support Django 1.7 including migrations
 - added CURRENCY_FORMAT setting
