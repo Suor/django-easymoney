@@ -5,6 +5,7 @@ from decimal import Decimal
 from mock import patch
 
 from easymoney import Money
+from .models import GameMoney
 
 
 def test_create():
@@ -26,10 +27,10 @@ def test_create():
 def test_str():
     assert str(Money(3.14)) == '$3.14'
     assert str(Money(3)) == '$3.00'
-    with patch('easymoney.CURRENCY_CODE', 'EUR'):
+    with patch('easymoney.Money.CODE', 'EUR'):
         assert str(Money(3.14)) == '\xe2\x82\xac3.14'
         assert str(Money(3)) == '\xe2\x82\xac3.00'
-    with patch('easymoney.CURRENCY_FORMAT', '#. points'):
+    with patch('easymoney.Money.FORMAT', '#. points'):
         assert str(Money(3)) == '3.00 points'
 
 
@@ -66,7 +67,7 @@ def test_precision():
 
 
 def test_higher_precision():
-    with patch('easymoney.CURRENCY_DECIMAL_PLACES', 3):
+    with patch('easymoney.Money.DECIMAL_PLACES', 3):
         assert Money('1.001') * 1000 == 1001
 
 
@@ -110,6 +111,10 @@ def test_pickle():
 
 
 def test_places_str():
-    with patch('easymoney.CURRENCY_DECIMAL_PLACES', 3):
+    with patch('easymoney.Money.DECIMAL_PLACES', 3):
         assert str(Money('0.503')) == '$0.503'
         assert str(Money('0.500')) == '$0.50'
+
+
+def test_subclass():
+    assert str(GameMoney(3)) == '3 points'

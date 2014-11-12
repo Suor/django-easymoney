@@ -5,7 +5,7 @@ from mock import patch
 from django.db import models
 
 from easymoney import MoneyField
-from .models import Product
+from .models import Product, Game, GameMoney
 
 
 pytestmark = pytest.mark.django_db
@@ -40,8 +40,17 @@ def test_fetch():
 
 
 def test_places():
-    with patch('easymoney.CURRENCY_DECIMAL_PLACES', 3):
-        class Game(models.Model):
+    with patch('easymoney.Money.DECIMAL_PLACES', 3):
+        class Round(models.Model):
             bet = MoneyField()
 
-        assert Game._meta.get_field('bet').decimal_places == 3
+        assert Round._meta.get_field('bet').decimal_places == 3
+
+
+def test_subclass():
+    g = Game.objects.create(prize=15)
+    assert isinstance(g.prize, GameMoney)
+
+    g2 = Game.objects.get(pk=g.pk)
+    assert isinstance(g2.prize, GameMoney)
+    assert g2.prize == g.prize

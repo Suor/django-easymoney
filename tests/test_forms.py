@@ -62,5 +62,5 @@ def test_edit_null():
 
 
 def test_unicode():
-    with patch('easymoney.CURRENCY_CODE', 'EUR'):
+    with patch('easymoney.Money.CODE', 'EUR'):
         str(OptionForm())

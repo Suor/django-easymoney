@@ -1,6 +1,8 @@
 import sys
 from decimal import Decimal, ROUND_HALF_UP
 
+from babel.core import Locale
+from babel.numbers import parse_pattern
 from django import forms
 from django.db import models
 from django.conf import settings
@@ -9,33 +11,24 @@ from django.conf import settings
 __all__ = ['Money', 'MoneyField']
 
 
-# Settings
-
-CURRENCY_CODE = getattr(settings, 'CURRENCY_CODE', 'USD')
-CURRENCY_FORMAT = getattr(settings, 'CURRENCY_FORMAT', None)
-CURRENCY_LOCALE = getattr(settings, 'CURRENCY_LOCALE', 'en_US')
-CURRENCY_DECIMAL_PLACES = getattr(settings, 'CURRENCY_DECIMAL_PLACES', 2)
-
-
-# Currency formatting
-
-from babel.core import Locale
-from babel.numbers import LC_NUMERIC, parse_pattern
-
-def format_currency(number, currency, format=None, locale=LC_NUMERIC):
-    locale = Locale.parse(locale)
-    if not format:
-        format = locale.currency_formats.get(format)
-    pattern = parse_pattern(format)
-    pattern.frac_prec = (2, CURRENCY_DECIMAL_PLACES)
-    return pattern.apply(number, locale, currency=currency)
-
-
 # Data class
 
 class Money(Decimal):
+    # Class settings to override in descendants
+    CODE = getattr(settings, 'CURRENCY_CODE', 'USD')
+    FORMAT = getattr(settings, 'CURRENCY_FORMAT', None)
+    LOCALE = getattr(settings, 'CURRENCY_LOCALE', 'en_US')
+    DECIMAL_PLACES = getattr(settings, 'CURRENCY_DECIMAL_PLACES', 2)
+
     def __new__(cls, amount):
-        return Decimal.__new__(Money, _sanitize(amount))
+        return Decimal.__new__(cls, cls._sanitize(amount))
+
+    @classmethod
+    def _sanitize(cls, amount):
+        if isinstance(amount, cls):
+            return amount
+        quant = Decimal('0.1') ** cls.DECIMAL_PLACES
+        return _to_decimal(amount).quantize(quant, rounding=ROUND_HALF_UP)
 
     # Support for pickling
     def __reduce__(self):
@@ -53,11 +46,18 @@ class Money(Decimal):
         return float(Decimal(self))
 
     def __unicode__(self):
-        return format_currency(Decimal(self), CURRENCY_CODE,
-            locale=CURRENCY_LOCALE, format=CURRENCY_FORMAT)
+        return self._format_currency(Decimal(self))
 
     def __str__(self):
         return unicode(self).encode('utf-8')
+
+    @classmethod
+    def _format_currency(cls, number):
+        locale = Locale.parse(cls.LOCALE)
+        format = cls.FORMAT or locale.currency_formats.get(None)
+        pattern = parse_pattern(format)
+        pattern.frac_prec = (2, cls.DECIMAL_PLACES)
+        return pattern.apply(number, locale, currency=cls.CODE)
 
     def __format__(self, format_spec):
         if format_spec in {'', 's'}:
@@ -77,7 +77,7 @@ class Money(Decimal):
         if isinstance(other, Money):
             return Decimal.__eq__(self, other)
         elif isinstance(other, (int, long, float, Decimal)):
-            return Decimal.__eq__(self, _sanitize(other))
+            return Decimal.__eq__(self, self._sanitize(other))
         else:
             return False
 
@@ -90,16 +90,10 @@ def _to_decimal(amount):
     else:
         return Decimal(amount)
 
-def _sanitize(amount):
-    if isinstance(amount, Money):
-        return amount
-    quant = Decimal('0.1') ** CURRENCY_DECIMAL_PLACES
-    return _to_decimal(amount).quantize(quant, rounding=ROUND_HALF_UP)
-
 def _make_method(name):
     method = getattr(Decimal, name)
     return lambda self, other, context=None: \
-        Money(method(self, _to_decimal(other), context=context))
+        self.__class__(method(self, _to_decimal(other), context=context))
 
 ops = 'add radd sub rsub mul rmul floordiv rfloordiv truediv rtruediv div rdiv mod rmod'
 for op in ops.split():
@@ -112,10 +106,11 @@ for op in ops.split():
 
 class MoneyField(models.DecimalField):
     __metaclass__ = models.SubfieldBase
+    MONEY_CLASS = Money
 
     # NOTE: we specify default value for max_digits for extra ease
     def __init__(self, verbose_name=None, name=None, max_digits=12, **kwargs):
-        self.max_digits, self.decimal_places = max_digits, CURRENCY_DECIMAL_PLACES
+        self.max_digits, self.decimal_places = max_digits, self.MONEY_CLASS.DECIMAL_PLACES
         models.Field.__init__(self, verbose_name, name, **kwargs)
 
     def deconstruct(self):
@@ -128,7 +123,7 @@ class MoneyField(models.DecimalField):
         if value is None:
             return value
 
-        return Money(value)
+        return self.MONEY_CLASS(value)
 
     def get_prep_value(self, value):
         if value is None:
