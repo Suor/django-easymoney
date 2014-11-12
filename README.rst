@@ -44,3 +44,40 @@ Overview
 
     # No partial cents or crazy floats
     obj.price / 3   # $1.05
+
+
+Settings
+--------
+
+A primary use of easymoney is global currency defined in settings
+with global formatting and precision. Here is how you do that:
+
+.. code:: python
+
+    # These are default settings, code and locales refer to ones used in babel library
+    CURRENCY_CODE = 'USD'
+    CURRENCY_LOCALE = 'en_US'
+    CURRENCY_DECIMAL_PLACES = 2
+
+    # This is optional, for cases when you want to use some fake currency
+    CURRENCY_FORMAT = '# points'
+
+
+Several currencies
+------------------
+
+One money field can't store different currencies, however, you can create different money classes and model fields for them:
+
+.. code:: python
+
+    from easymoney import Money, MoneyField
+
+    class GameMoney(Money):
+        # CODE = '...'
+        # LOCALE = '...'
+        DECIMAL_PLACES = 0
+        FORMAT = '# points'
+
+    class GameMoneyField(MoneyField):
+        MONEY_CLASS = GameMoney
+
