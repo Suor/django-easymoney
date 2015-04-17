@@ -7,10 +7,12 @@ from .models import Product, Option
 class ProductForm(ModelForm):
     class Meta:
         model = Product
+        fields = "__all__"
 
 class OptionForm(ModelForm):
     class Meta:
         model = Option
+        fields = "__all__"
 
 
 def test_post(rf):
@@ -44,6 +46,7 @@ def test_radio():
     class RadioForm(ModelForm):
         class Meta:
             model = Option
+            fields = "__all__"
             widgets = {
                 'price': RadioSelect
             }
