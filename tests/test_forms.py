@@ -58,7 +58,7 @@ def test_radio():
 
 def test_edit_null():
     form = OptionForm()
-    print str(form)
+    print(str(form))
 
 
 def test_unicode():
