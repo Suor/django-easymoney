@@ -96,7 +96,7 @@ class Money(Decimal):
         else:
             formatted = format(Decimal(self), format_spec)
 
-        if isinstance(format_spec, str):
+        if isinstance(format_spec, six.binary_type):
             return formatted.encode('utf-8')
         else:
             return formatted

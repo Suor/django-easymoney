@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import absolute_import
 import copy
 import pickle
@@ -30,8 +31,8 @@ def test_str():
     assert str(Money(3.14)) == '$3.14'
     assert str(Money(3)) == '$3.00'
     with patch('easymoney.Money.CODE', 'EUR'):
-        assert str(Money(3.14)) == '\xe2\x82\xac3.14'
-        assert str(Money(3)) == '\xe2\x82\xac3.00'
+        assert str(Money(3.14)) == '€3.14'
+        assert str(Money(3)) == '€3.00'
     with patch('easymoney.Money.FORMAT', '#. points'):
         assert str(Money(3)) == '3.00 points'
 
