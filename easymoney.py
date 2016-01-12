@@ -77,7 +77,7 @@ class Money(Decimal):
     @classmethod
     def _format_currency(cls, number):
         locale = Locale.parse(cls.LOCALE)
-        format = cls.FORMAT or locale.currency_formats.get(None)
+        format = cls.FORMAT or locale.currency_formats['standard']
         pattern = parse_pattern(format)
         pattern.frac_prec = (2, cls.DECIMAL_PLACES)
         return pattern.apply(number, locale, currency=cls.CODE)
