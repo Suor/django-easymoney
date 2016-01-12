@@ -11,6 +11,29 @@ from django.conf import settings
 __all__ = ['Money', 'MoneyField']
 
 
+# Set up money arithmetic
+def _to_decimal(amount):
+    if isinstance(amount, Decimal):
+        return amount
+    elif isinstance(amount, float):
+        return Decimal.from_float(amount)
+    else:
+        return Decimal(amount)
+
+
+def _make_method(name):
+    method = getattr(Decimal, name, None)
+
+    def __money_method__(self, other, context=None):
+        if method is None:
+            raise NotImplementedError(
+                'Decimal.{name} is not implemented.'.format(name=name))
+        return self.__class__(
+            method(self, _to_decimal(other), context=context))
+
+    return __money_method__
+
+
 # Data class
 
 class Money(Decimal):
@@ -81,25 +104,20 @@ class Money(Decimal):
         else:
             return False
 
-# Set up money arithmetic
-def _to_decimal(amount):
-    if isinstance(amount, Decimal):
-        return amount
-    elif isinstance(amount, float):
-        return Decimal.from_float(amount)
-    else:
-        return Decimal(amount)
-
-def _make_method(name):
-    method = getattr(Decimal, name)
-    return lambda self, other, context=None: \
-        self.__class__(method(self, _to_decimal(other), context=context))
-
-ops = 'add radd sub rsub mul rmul floordiv rfloordiv truediv rtruediv div rdiv mod rmod'
-for op in ops.split():
-    name = '__%s__' % op
-    maker = make_compare if op in {'eq', 'ne'} else _make_method
-    setattr(Money, name, maker(name))
+    __add__ = _make_method('__add__')
+    __radd__ = _make_method('__radd__')
+    __sub__ = _make_method('__sub__')
+    __rsub__ = _make_method('__rsub__')
+    __mul__ = _make_method('__mul__')
+    __rmul__ = _make_method('__rmul__')
+    __floordiv__ = _make_method('__floordiv__')
+    __rfloordiv__ = _make_method('__rfloordiv__')
+    __truediv__ = _make_method('__truediv__')
+    __rtruediv__ = _make_method('__rtruediv__')
+    __div__ = _make_method('__div__')
+    __rdiv__ = _make_method('__rdiv__')
+    __mod__ = _make_method('__mod__')
+    __rmod__ = _make_method('__rmod__')
 
 
 # Model field
