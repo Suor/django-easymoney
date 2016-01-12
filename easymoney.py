@@ -118,6 +118,10 @@ class Money(Decimal):
     __rdiv__ = _make_method('__rdiv__')
     __mod__ = _make_method('__mod__')
     __rmod__ = _make_method('__rmod__')
+    __divmod__ = _make_method('__divmod__')
+    __rdivmod__ = _make_method('__rdivmod__')
+    __pow__ = _make_method('__pow__')
+    __rpow__ = _make_method('__rpow__')
 
 
 # Model field
