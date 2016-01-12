@@ -25,6 +25,9 @@ setup(
         'Programming Language :: Python',
 
         'Framework :: Django',
+        'Framework :: Django :: 1.6',
+        'Framework :: Django :: 1.7',
+        'Framework :: Django :: 1.8',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'Programming Language :: Python :: 2',
