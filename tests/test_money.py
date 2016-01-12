@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import
 import copy
 import pickle
 from decimal import Decimal
@@ -6,6 +8,7 @@ from mock import patch
 
 from easymoney import Money
 from .models import GameMoney
+import six
 
 
 def test_create():
@@ -28,8 +31,8 @@ def test_str():
     assert str(Money(3.14)) == '$3.14'
     assert str(Money(3)) == '$3.00'
     with patch('easymoney.Money.CODE', 'EUR'):
-        assert str(Money(3.14)) == '\xe2\x82\xac3.14'
-        assert str(Money(3)) == '\xe2\x82\xac3.00'
+        assert str(Money(3.14)) == '€3.14'
+        assert str(Money(3)) == '€3.00'
     with patch('easymoney.Money.FORMAT', '#. points'):
         assert str(Money(3)) == '3.00 points'
 
@@ -38,7 +41,7 @@ def test_format():
     pi = Money(3.14)
     assert '{}'.format(pi) == '$3.14'
     assert '{:s}'.format(pi) == '$3.14'
-    assert isinstance(u'{}'.format(pi), unicode)
+    assert isinstance(u'{}'.format(pi), six.text_type)
     assert '{:.1f}'.format(pi) == '3.1'
     assert '{:e}'.format(pi) == '3.14e+0'
 
