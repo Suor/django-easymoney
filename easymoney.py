@@ -3,8 +3,8 @@ from __future__ import absolute_import
 import sys
 from decimal import Decimal, ROUND_HALF_UP
 
-from babel.core import Locale
-from babel.numbers import format_currency
+import babel.core
+import babel.numbers
 from django import forms
 from django.db import models
 from django.conf import settings
@@ -38,6 +38,35 @@ def _make_method(name):
     return __money_method__
 
 
+def format_currency(number, currency, format, locale=babel.numbers.LC_NUMERIC,
+                    force_frac=None, format_type='standard'):
+    """Same as ``babel.numbers.format_currency``, but has ``force_frac``
+    argument instead of ``currency_digits``.
+
+    If the ``force_frac`` argument is given, the argument is passed down to
+    ``pattern.apply``.
+    """
+    locale = babel.core.Locale.parse(locale)
+    if format:
+        pattern = babel.numbers.parse_pattern(format)
+    else:
+        try:
+            pattern = locale.currency_formats[format_type]
+        except KeyError:
+            raise babel.numbers.UnknownCurrencyFormatError(
+                "%r is not a known currency format type" % format_type)
+    if force_frac is None:
+        fractions = babel.core.get_global('currency_fractions')
+        try:
+            digits = fractions[currency][0]
+        except KeyError:
+            digits = fractions['DEFAULT'][0]
+        frac = (digits, digits)
+    else:
+        frac = force_frac
+    return pattern.apply(number, locale, currency=currency, force_frac=frac)
+
+
 # Data class
 
 class Money(Decimal):
@@ -46,6 +75,7 @@ class Money(Decimal):
     FORMAT = getattr(settings, 'CURRENCY_FORMAT', None)
     LOCALE = getattr(settings, 'CURRENCY_LOCALE', 'en_US')
     DECIMAL_PLACES = getattr(settings, 'CURRENCY_DECIMAL_PLACES', 2)
+    MIN_DECIMAL_PLACES = 2
 
     def __new__(cls, amount):
         return Decimal.__new__(cls, cls._sanitize(amount))
@@ -87,7 +117,8 @@ class Money(Decimal):
             number=number,
             currency=cls.CODE,
             format=cls.FORMAT,
-            locale=cls.LOCALE)
+            locale=cls.LOCALE,
+            force_frac=(cls.MIN_DECIMAL_PLACES, cls.DECIMAL_PLACES))
         return six.text_type(string)
 
     def __format__(self, format_spec):
