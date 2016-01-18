@@ -4,7 +4,7 @@ import sys
 from decimal import Decimal, ROUND_HALF_UP
 
 from babel.core import Locale
-from babel.numbers import parse_pattern
+from babel.numbers import format_currency
 from django import forms
 from django.db import models
 from django.conf import settings
@@ -83,11 +83,11 @@ class Money(Decimal):
 
     @classmethod
     def _format_currency(cls, number):
-        locale = Locale.parse(cls.LOCALE)
-        format = cls.FORMAT or locale.currency_formats['standard']
-        pattern = parse_pattern(format)
-        pattern.frac_prec = (2, cls.DECIMAL_PLACES)
-        string = pattern.apply(number, locale, currency=cls.CODE)
+        string = format_currency(
+            number=number,
+            currency=cls.CODE,
+            format=cls.FORMAT,
+            locale=cls.LOCALE)
         return six.text_type(string)
 
     def __format__(self, format_spec):
