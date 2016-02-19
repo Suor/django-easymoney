@@ -113,13 +113,13 @@ class Money(Decimal):
 
     @classmethod
     def _format_currency(cls, number):
-        string = format_currency(
+        return format_currency(
             number=number,
             currency=cls.CODE,
             format=cls.FORMAT,
             locale=cls.LOCALE,
-            force_frac=(cls.MIN_DECIMAL_PLACES, cls.DECIMAL_PLACES))
-        return six.text_type(string)
+            force_frac=(cls.MIN_DECIMAL_PLACES, cls.DECIMAL_PLACES)
+        )
 
     def __format__(self, format_spec):
         if format_spec in {'', 's'}:
