@@ -1,6 +1,7 @@
 Django>=1.6,<1.7
-babel
+babel>=2.2.0
 pytest
 pytest-django
 pytest-pythonpath
 mock
+six
