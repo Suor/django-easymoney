@@ -1,3 +1,10 @@
+0.6
+- support Django 1.8 and 1.9 (Andy Hayden and me)
+- support Python 3.5 (Gregor Müllegger)
+- support python 3 (Andy Hayden)
+- improved formatting logic (Gregor Müllegger)
+- added divmod and pow to Money (Gregor Müllegger)
+
 0.5
 - support subclassing to support several currencies simultaneously
 
