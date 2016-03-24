@@ -3,6 +3,8 @@ from __future__ import absolute_import
 import copy
 import pickle
 from decimal import Decimal
+from operator import floordiv
+from operator import truediv
 
 from mock import patch
 
@@ -82,6 +84,9 @@ def test_arithmetic_returns_money_instance():
     assert type(truediv(3, Money(2))) is Money
     assert type(Money(3) ** 2) is Money
     assert type(2 ** Money(3)) is Money
+    assert type(+Money(2)) is Money
+    assert type(-Money(2)) is Money
+    assert type(abs(Money(2))) is Money
 
 
 def test_precision():

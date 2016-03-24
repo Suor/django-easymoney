@@ -24,6 +24,19 @@ def _to_decimal(amount):
         return Decimal(amount)
 
 
+def _make_unary_operator(name):
+    method = getattr(Decimal, name, None)
+
+    def __money_method__(self, context=None):
+        if method is None:
+            raise NotImplementedError(
+                'Decimal.{name} is not implemented.'.format(name=name))
+        args = (context,) if context is not None else ()
+        return self.__class__(method(self, *args))
+
+    return __money_method__
+
+
 def _make_binary_operator(name):
     method = getattr(Decimal, name, None)
 
@@ -142,6 +155,10 @@ class Money(Decimal):
             return Decimal.__eq__(self, self._sanitize(other))
         else:
             return False
+
+    __abs__ = _make_unary_operator('__abs__')
+    __pos__ = _make_unary_operator('__pos__')
+    __neg__ = _make_unary_operator('__neg__')
 
     __add__ = _make_binary_operator('__add__')
     __radd__ = _make_binary_operator('__radd__')
