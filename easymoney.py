@@ -133,7 +133,12 @@ class Money(Decimal):
             return formatted
 
     def __repr__(self):
-        return stdout_encode(u'Money(%s)' % self)
+        repr_str = u'Money(%s)' % self
+        # __repr__ always returns a string type. We don't want to return bytes
+        # in PY3.
+        if six.PY2:
+            return stdout_encode(repr_str)
+        return repr_str
 
     def __eq__(self, other):
         if isinstance(other, Money):
