@@ -69,6 +69,21 @@ def test_arithmetic():
     assert abs(-pi) == 3.14
 
 
+def test_arithmetic_returns_money_instance():
+    assert type(Money(3) + 2) is Money
+    assert type(3 + Money(2)) is Money
+    assert type(Money(3) - 2) is Money
+    assert type(3 - Money(2)) is Money
+    assert type(Money(3) * 2) is Money
+    assert type(3 * Money(2)) is Money
+    assert type(floordiv(Money(3), 2)) is Money
+    assert type(floordiv(3, Money(2))) is Money
+    assert type(truediv(Money(3), 2)) is Money
+    assert type(truediv(3, Money(2))) is Money
+    assert type(Money(3) ** 2) is Money
+    assert type(2 ** Money(3)) is Money
+
+
 def test_precision():
     assert Money(1000) * 1.001 == 1001
     assert Money('1.001') * 1000 == 1000
