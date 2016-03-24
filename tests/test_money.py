@@ -63,6 +63,11 @@ def test_arithmetic():
     assert pi + e == 5.92
     assert pi - e == 0.36
 
+    assert -pi == -3.14
+    assert +pi == 3.14
+    assert abs(pi) == 3.14
+    assert abs(-pi) == 3.14
+
 
 def test_precision():
     assert Money(1000) * 1.001 == 1001
