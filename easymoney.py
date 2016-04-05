@@ -28,9 +28,6 @@ def _make_unary_operator(name):
     method = getattr(Decimal, name, None)
 
     def __money_method__(self, context=None):
-        if method is None:
-            raise NotImplementedError(
-                'Decimal.{name} is not implemented.'.format(name=name))
         args = (context,) if context is not None else ()
         return self.__class__(method(self, *args))
 
@@ -41,9 +38,6 @@ def _make_binary_operator(name):
     method = getattr(Decimal, name, None)
 
     def __money_method__(self, other, context=None):
-        if method is None:
-            raise NotImplementedError(
-                'Decimal.{name} is not implemented.'.format(name=name))
         args = (context,) if context is not None else ()
         return self.__class__(
             method(self, _to_decimal(other), *args))
@@ -175,8 +169,9 @@ class Money(Decimal):
     __rfloordiv__ = _make_binary_operator('__rfloordiv__')
     __truediv__ = _make_binary_operator('__truediv__')
     __rtruediv__ = _make_binary_operator('__rtruediv__')
-    __div__ = _make_binary_operator('__div__')
-    __rdiv__ = _make_binary_operator('__rdiv__')
+    if hasattr(Decimal, '__div__'):
+        __div__ = _make_binary_operator('__div__')
+        __rdiv__ = _make_binary_operator('__rdiv__')
     __mod__ = _make_binary_operator('__mod__')
     __rmod__ = _make_binary_operator('__rmod__')
     __divmod__ = _make_binary_operator('__divmod__')
