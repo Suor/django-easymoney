@@ -1,3 +1,9 @@
+0.7
+- support unary ops (Gregor Müllegger)
+- support 3-argument pow()
+- fixed Money.__repr__ in Python 3 (Gregor Müllegger)
+- some optimizations
+
 0.6
 - support Django 1.8 and 1.9 (Andy Hayden and me)
 - support Python 3.5 (Gregor Müllegger)
