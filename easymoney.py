@@ -24,7 +24,20 @@ def _to_decimal(amount):
         return Decimal(amount)
 
 
-def _make_method(name):
+def _make_unary_operator(name):
+    method = getattr(Decimal, name, None)
+
+    def __money_method__(self, context=None):
+        if method is None:
+            raise NotImplementedError(
+                'Decimal.{name} is not implemented.'.format(name=name))
+        args = (context,) if context is not None else ()
+        return self.__class__(method(self, *args))
+
+    return __money_method__
+
+
+def _make_binary_operator(name):
     method = getattr(Decimal, name, None)
 
     def __money_method__(self, other, context=None):
@@ -148,24 +161,28 @@ class Money(Decimal):
         else:
             return False
 
-    __add__ = _make_method('__add__')
-    __radd__ = _make_method('__radd__')
-    __sub__ = _make_method('__sub__')
-    __rsub__ = _make_method('__rsub__')
-    __mul__ = _make_method('__mul__')
-    __rmul__ = _make_method('__rmul__')
-    __floordiv__ = _make_method('__floordiv__')
-    __rfloordiv__ = _make_method('__rfloordiv__')
-    __truediv__ = _make_method('__truediv__')
-    __rtruediv__ = _make_method('__rtruediv__')
-    __div__ = _make_method('__div__')
-    __rdiv__ = _make_method('__rdiv__')
-    __mod__ = _make_method('__mod__')
-    __rmod__ = _make_method('__rmod__')
-    __divmod__ = _make_method('__divmod__')
-    __rdivmod__ = _make_method('__rdivmod__')
-    __pow__ = _make_method('__pow__')
-    __rpow__ = _make_method('__rpow__')
+    __abs__ = _make_unary_operator('__abs__')
+    __pos__ = _make_unary_operator('__pos__')
+    __neg__ = _make_unary_operator('__neg__')
+
+    __add__ = _make_binary_operator('__add__')
+    __radd__ = _make_binary_operator('__radd__')
+    __sub__ = _make_binary_operator('__sub__')
+    __rsub__ = _make_binary_operator('__rsub__')
+    __mul__ = _make_binary_operator('__mul__')
+    __rmul__ = _make_binary_operator('__rmul__')
+    __floordiv__ = _make_binary_operator('__floordiv__')
+    __rfloordiv__ = _make_binary_operator('__rfloordiv__')
+    __truediv__ = _make_binary_operator('__truediv__')
+    __rtruediv__ = _make_binary_operator('__rtruediv__')
+    __div__ = _make_binary_operator('__div__')
+    __rdiv__ = _make_binary_operator('__rdiv__')
+    __mod__ = _make_binary_operator('__mod__')
+    __rmod__ = _make_binary_operator('__rmod__')
+    __divmod__ = _make_binary_operator('__divmod__')
+    __rdivmod__ = _make_binary_operator('__rdivmod__')
+    __pow__ = _make_binary_operator('__pow__')
+    __rpow__ = _make_binary_operator('__rpow__')
 
 
 # Model field
