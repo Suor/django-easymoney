@@ -76,6 +76,12 @@ def test_arithmetic():
     assert abs(-pi) == 3.14
 
 
+def test_pow():
+    m = Money(2)
+    assert m ** 7 == 128
+    assert pow(m, 7, 3) == 2
+
+
 def test_arithmetic_returns_money_instance():
     assert type(Money(3) + 2) is Money
     assert type(3 + Money(2)) is Money

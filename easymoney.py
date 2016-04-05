@@ -26,23 +26,12 @@ def _to_decimal(amount):
 
 def _make_unary_operator(name):
     method = getattr(Decimal, name, None)
-
-    def __money_method__(self, context=None):
-        args = (context,) if context is not None else ()
-        return self.__class__(method(self, *args))
-
-    return __money_method__
+    return lambda self: self.__class__(method(self))
 
 
 def _make_binary_operator(name):
     method = getattr(Decimal, name, None)
-
-    def __money_method__(self, other, context=None):
-        args = (context,) if context is not None else ()
-        return self.__class__(
-            method(self, _to_decimal(other), *args))
-
-    return __money_method__
+    return lambda self, other: self.__class__(method(self, _to_decimal(other)))
 
 
 def format_currency(number, currency, format, locale=babel.numbers.LC_NUMERIC,
@@ -155,6 +144,10 @@ class Money(Decimal):
         else:
             return False
 
+    # Special casing this, cause it have extra modulo arg
+    def __pow__(self, other, modulo=None):
+        return self.__class__(Decimal.__pow__(self, _to_decimal(other), modulo))
+
     __abs__ = _make_unary_operator('__abs__')
     __pos__ = _make_unary_operator('__pos__')
     __neg__ = _make_unary_operator('__neg__')
@@ -176,7 +169,6 @@ class Money(Decimal):
     __rmod__ = _make_binary_operator('__rmod__')
     __divmod__ = _make_binary_operator('__divmod__')
     __rdivmod__ = _make_binary_operator('__rdivmod__')
-    __pow__ = _make_binary_operator('__pow__')
     __rpow__ = _make_binary_operator('__rpow__')
 
 
