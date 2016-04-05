@@ -37,6 +37,11 @@ def test_str():
         assert str(Money(3)) == '3.00 points'
 
 
+def test_repr():
+    pi = Money('3.14')
+    assert repr(pi) == 'Money($3.14)'
+
+
 def test_format():
     pi = Money(3.14)
     assert '{}'.format(pi) == '$3.14'
