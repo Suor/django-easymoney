@@ -26,12 +26,14 @@ def _to_decimal(amount):
 
 def _make_unary_operator(name):
     method = getattr(Decimal, name, None)
-    return lambda self: self.__class__(method(self))
+    # NOTE: current context would be used anyway, so we can just ignore it.
+    #       Newer pythons don't have that, keeping this for compatability.
+    return lambda self, context=None: self.__class__(method(self))
 
 
 def _make_binary_operator(name):
     method = getattr(Decimal, name, None)
-    return lambda self, other: self.__class__(method(self, _to_decimal(other)))
+    return lambda self, other, context=None: self.__class__(method(self, _to_decimal(other)))
 
 
 def format_currency(number, currency, format, locale=babel.numbers.LC_NUMERIC,
