@@ -33,7 +33,16 @@ def _make_unary_operator(name):
 
 def _make_binary_operator(name):
     method = getattr(Decimal, name, None)
-    return lambda self, other, context=None: self.__class__(method(self, _to_decimal(other)))
+    def binary_function(self, other, context=None):
+        try:
+            other = _to_decimal(other)
+        except:
+            raise TypeError(
+                "Cannot do arithmetic operation between "
+                "{} and {}.".format(self, other)
+            )
+        return self.__class__(method(self, other))
+    return binary_function
 
 
 def format_currency(number, currency, format, locale=babel.numbers.LC_NUMERIC,
@@ -148,7 +157,14 @@ class Money(Decimal):
 
     # Special casing this, cause it have extra modulo arg
     def __pow__(self, other, modulo=None):
-        return self.__class__(Decimal.__pow__(self, _to_decimal(other), modulo))
+        try:
+            other = _to_decimal(other)
+        except:
+            raise TypeError(
+                "Cannot do arithmetic operation between "
+                "{} and {}.".format(self, other)
+            )
+        return self.__class__(Decimal.__pow__(self, other, modulo))
 
     __abs__ = _make_unary_operator('__abs__')
     __pos__ = _make_unary_operator('__pos__')
