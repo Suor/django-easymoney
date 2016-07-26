@@ -39,7 +39,7 @@ def _make_binary_operator(name):
         except:
             raise TypeError(
                 "Cannot do arithmetic operation between "
-                "{} and {}.".format(self, other)
+                "{} and {}.".format(repr(self), repr(other))
             )
         return self.__class__(method(self, other))
     return binary_function
@@ -162,7 +162,7 @@ class Money(Decimal):
         except:
             raise TypeError(
                 "Cannot do arithmetic operation between "
-                "{} and {}.".format(self, other)
+                "{} and {}.".format(repr(self), repr(other))
             )
         return self.__class__(Decimal.__pow__(self, other, modulo))
 
