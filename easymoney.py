@@ -31,16 +31,20 @@ def _make_unary_operator(name):
     return lambda self, context=None: self.__class__(method(self))
 
 
+def _prepare_operand(self, other):
+    try:
+        return _to_decimal(other)
+    except:
+        raise TypeError(
+            "Cannot do arithmetic operation between "
+            "{} and {}.".format(repr(self), repr(other))
+        )
+
+
 def _make_binary_operator(name):
     method = getattr(Decimal, name, None)
     def binary_function(self, other, context=None):
-        try:
-            other = _to_decimal(other)
-        except:
-            raise TypeError(
-                "Cannot do arithmetic operation between "
-                "{} and {}.".format(repr(self), repr(other))
-            )
+        other = _prepare_operand(self, other)
         return self.__class__(method(self, other))
     return binary_function
 
@@ -162,13 +166,7 @@ class Money(Decimal):
 
     # Special casing this, cause it have extra modulo arg
     def __pow__(self, other, modulo=None):
-        try:
-            other = _to_decimal(other)
-        except:
-            raise TypeError(
-                "Cannot do arithmetic operation between "
-                "{} and {}.".format(repr(self), repr(other))
-            )
+        other = _prepare_operand(self, other)
         return self.__class__(Decimal.__pow__(self, other, modulo))
 
     __abs__ = _make_unary_operator('__abs__')
