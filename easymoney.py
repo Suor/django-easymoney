@@ -155,6 +155,11 @@ class Money(Decimal):
         else:
             return False
 
+    # for Python 3:
+    # need to re-define __hash__ because we defined __eq__ above
+    # https://docs.python.org/3.5/reference/datamodel.html#object.%5F%5Fhash%5F%5F
+    __hash__ = Decimal.__hash__
+
     # Special casing this, cause it have extra modulo arg
     def __pow__(self, other, modulo=None):
         try:
