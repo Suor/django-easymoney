@@ -137,6 +137,10 @@ def test_float_arithmetic():
     assert pi - 0.005 == 3.13
 
 
+def test_hashing():
+    x = {Money(3): 1}
+
+
 def test_copy():
     pi = Money(3.14)
     assert pi == copy.copy(pi)
