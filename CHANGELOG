@@ -1,3 +1,7 @@
+0.7.1
+- clearer error messages in binary ops TypeErrors (oTree-org)
+- support Money hashing in Python 3 (oTree-org)
+
 0.7
 - support unary ops (Gregor Müllegger)
 - support 3-argument pow()
