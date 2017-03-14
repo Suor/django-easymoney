@@ -144,12 +144,7 @@ class Money(Decimal):
             return formatted
 
     def __repr__(self):
-        repr_str = u'Money(%s)' % self
-        # __repr__ always returns a string type. We don't want to return bytes
-        # in PY3.
-        if six.PY2:
-            return stdout_encode(repr_str)
-        return repr_str
+        return '{}({})'.format(self.__class__.__name__, Decimal.__str__(self))
 
     def __eq__(self, other):
         if isinstance(other, Money):
@@ -191,6 +186,11 @@ class Money(Decimal):
     __divmod__ = _make_binary_operator('__divmod__')
     __rdivmod__ = _make_binary_operator('__rdivmod__')
     __rpow__ = _make_binary_operator('__rpow__')
+
+    def deconstruct(self):
+        return [
+            '{}.{}'.format(self.__module__, self.__class__.__name__),
+            [Decimal.__str__(self)], {}]
 
 
 # Model field
