@@ -41,7 +41,7 @@ def test_str():
 
 def test_repr():
     pi = Money('3.14')
-    assert repr(pi) == 'Money($3.14)'
+    assert repr(pi) == 'Money(3.14)'
 
 
 def test_format():
