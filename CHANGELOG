@@ -1,3 +1,6 @@
+0.7.2
+- better support Django migrations
+
 0.7.1
 - clearer error messages in binary ops TypeErrors (oTree-org)
 - support Money hashing in Python 3 (oTree-org)
