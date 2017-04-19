@@ -188,9 +188,8 @@ class Money(Decimal):
     __rpow__ = _make_binary_operator('__rpow__')
 
     def deconstruct(self):
-        return [
-            '{}.{}'.format(self.__module__, self.__class__.__name__),
-            [Decimal.__str__(self)], {}]
+        return '{}.{}'.format(self.__module__, self.__class__.__name__), \
+               [Decimal.__str__(self)], {}
 
 
 # Model field
